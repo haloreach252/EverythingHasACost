@@ -2667,6 +2667,7 @@ GameObject:
   m_Component:
   - component: {fileID: 986162422}
   - component: {fileID: 986162423}
+  - component: {fileID: 986162424}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2702,6 +2703,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventManager:
     possibleEvents: []
+  costs:
+    rentCost: 120
+    mealCost: 10
+    utilityCost: 35
+    carCost: 65
   hourDisplayTexts:
   - {fileID: 1180936353}
   - {fileID: 1155717784}
@@ -2710,8 +2716,23 @@ MonoBehaviour:
   statSliders:
   - {fileID: 404446274}
   - {fileID: 1743650691}
-  - {fileID: 408730567}
   - {fileID: 116376333}
+  - {fileID: 408730567}
+--- !u!114 &986162424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 986162421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3062ec20cdd03d46985cb0901409232, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messageBoxPrefab: {fileID: 4907893028682855948, guid: 21e39c48285383a459872ec799571999,
+    type: 3}
+  canvas: {fileID: 1713382316}
 --- !u!1 &1120248107
 GameObject:
   m_ObjectHideFlags: 0
@@ -3659,7 +3680,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:

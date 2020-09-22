@@ -26,6 +26,12 @@ public class DayManager : MonoBehaviour {
     public EventManager eventManager;
     List<DayEvent> thisDayEvents;
 
+    // Costs
+    public Costs costs;
+
+    // Message Handling
+    MessageManager messageManager;
+
     // Hours management
     private int[] hours;
     private int totalHours;
@@ -55,6 +61,8 @@ public class DayManager : MonoBehaviour {
         eventManager = new EventManager(3);
 
         thisDayEvents = new List<DayEvent>();
+
+        messageManager = GetComponent<MessageManager>();
 
         hours = new int[4] { 0,0,0,0 };
 
@@ -86,8 +94,8 @@ public class DayManager : MonoBehaviour {
 
         statSliderTexts[0].text = "Money - $" + money;
         statSliderTexts[1].text = "Sleep - " + sleepStateEnum.ToString();
-        statSliderTexts[1].text = "Mental Health - " + mentalHealthStateEnum.ToString();
-        statSliderTexts[1].text = "Health - " + healthStateEnum.ToString();
+        statSliderTexts[2].text = "Mental Health - " + mentalHealthStateEnum.ToString();
+        statSliderTexts[3].text = "Health - " + healthStateEnum.ToString();
     }
 
     // This occurs after a day ends at the beginning of the next day
@@ -117,67 +125,111 @@ public class DayManager : MonoBehaviour {
     }
 
     public void BeginDay() {
-        // TODO: make error messaging system
-        if(totalHours != maxHoursPerDay)
+        if(totalHours != maxHoursPerDay) {
+            messageManager.CreateMessage("Error!", "Make sure you have a full 24 hours in your schedule");
             return;
+        }
 
         RunDayLogic();
     }
 
     private void RunDayLogic() {
 
-        float workTotal = WorkCalculations(hours[0]);
-        float sleepTotal = SleepCalculations(hours[1]);
-        float eatTotal = EatCalculations(hours[2]);
-        float socialTotal = SocialCalculations(hours[3]);
+        WorkCalculations(hours[0]);
+        SleepCalculations(hours[1]);
+        EatCalculations(hours[2]);
+        SocialCalculations(hours[3]);
+
+        for (int i = 0; i < hours.Length; i++) {
+            hours[i] = 0;
+            hourDisplayTexts[i].text = "0";
+        }
 
         // Run daily costs with events
-        if(daysPassed != 0 && daysPassed % 7 == 1) {
+        if (daysPassed != 0 && daysPassed % 7 == 0) {
             WeekendCalculations();
+        }
+        if(thisDayEvents.Count > 0) {
+            
         }
 
         // Show messages for events and such
 
-        // Total the calculations based off events
-
-        // Update totals and sliders
 
         UpdateSliders();
+
+        if(healthState <= 0) {
+            Die();
+        }
 
         // Begin a new day
         StartDay();
     }
 
-    private float WeekendCalculations() {
-        return 0.0f;
+    private void WeekendCalculations() {
+
     }
 
-    private float WorkCalculations(int hours) {
-        float statMult = 1.0f;
-        if (hours > 9)
-            statMult = 1.5f;
-        else if (hours < 1)
-            statMult = 0;
+    private void WorkCalculations(int hours) {
+        float statMult = 0.0f;
+        if(hours != 0) {
+            if((daysPassed % 6 == 0 || daysPassed % 7 == 0) && hours > 3) {
+                mentalHealth -= 5 * (hours - 3);
+            }
+            if(hours <= 6) {
+                statMult = 1.0f;
+            } else if (hours <= 8) {
+                statMult = 1.0f;
+                mentalHealth -= 5 * (hours - 6);
+            } else {
+                statMult = 2.0f;
+                mentalHealth -= 5 * (hours - 6);
+            }
+        }
 
-        return hours * statMult * hourlyWage;
+        money += hours * statMult * hourlyWage;
     }
 
-    private float SleepCalculations(int hours) {
-        float statMult = 1.0f;
-
-        return 1.0f;
+    private void SleepCalculations(int hours) {
+        if(hours <= 4) {
+            healthState -= 5;
+            mentalHealth -= 10;
+        } else if(hours >= 7) {
+            healthState += 5;
+            mentalHealth += 5;
+        }
     }
 
-    private float EatCalculations(int hours) {
-        float statMult = 1.0f;
+    private void EatCalculations(int hours) {
+        if(hours != 0) 
+            money -= hours * costs.mealCost;
 
-        return 1.0f;
+        switch (hours) {
+            case 0:
+                mentalHealth -= 10;
+                healthState -= 10;
+                break;
+            case 1:
+                mentalHealth -= 5;
+                break;
+            case 3:
+                healthState += 5;
+                mentalHealth += 5;
+                break;
+            default:
+                break;
+        }
     }
 
-    private float SocialCalculations(int hours) {
-        float statMult = 1.0f;
+    private void SocialCalculations(int hours) {
+        if(hours != 0) {
+            money -= 5 * hours;
+            mentalHealth += 5 * hours;
+        }
+    }
 
-        return 1.0f;
+    private void Die() {
+
     }
 
 	#region Ugly code
@@ -232,6 +284,14 @@ public class DayManager : MonoBehaviour {
     }
     #endregion
 
+}
+
+[System.Serializable]
+public class Costs {
+    public float rentCost = 120.0f;
+    public float mealCost = 10.0f;
+    public float utilityCost = 35.0f;
+    public float carCost = 65.0f;
 }
 
 public enum HealthStates {
