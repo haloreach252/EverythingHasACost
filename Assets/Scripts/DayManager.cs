@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class DayManager : MonoBehaviour {
 
+    public EventManager eventManager;
+
     // Total hours per day, set to 24
     private const int maxHoursPerDay = 24;
 
@@ -37,15 +39,17 @@ public class DayManager : MonoBehaviour {
     private float hourlyWage = 12.50f;
 
     private void Start() {
+        eventManager = new EventManager(3);
+
         hours = new int[4] { 0,0,0,0 };
 
-        money = 0f;
+        money = 500f;
         mentalHealth = 100f;
         sleepState = 100f;
         healthState = 100f;
     }
 
-    // Adds hours to specific tasks, 
+    // Adds hours to specific tasks
     public void AddHour(int taskCode) {
         if(totalHours < 24) {
             totalHours++;
@@ -54,7 +58,7 @@ public class DayManager : MonoBehaviour {
         } else return;
     }
 
-    // Removes hours from specific tasks, 
+    // Removes hours from specific tasks
     public void RemoveHour(int taskCode) {
         if (totalHours > 0 && hours[taskCode] > 0) {
             totalHours--;
@@ -103,6 +107,10 @@ public class DayManager : MonoBehaviour {
         // Then eat, health
 
         // Then social, mental health
+
+        // Then we do the days events
+        List<DayEvent> thisDayEvents = new List<DayEvent>();
+        thisDayEvents = eventManager.GetDayEvents();
     }
 
 }
