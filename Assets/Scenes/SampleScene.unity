@@ -643,7 +643,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 100
+  m_MaxValue: 120
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
@@ -1079,7 +1079,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 5000
+  m_MaxValue: 10000
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
@@ -1168,7 +1168,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 100
+  m_MaxValue: 120
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
@@ -2700,11 +2700,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3be8ccdcac602584b89cdc13d4d88ee4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayTexts:
+  eventManager:
+    possibleEvents: []
+  hourDisplayTexts:
   - {fileID: 1180936353}
   - {fileID: 1155717784}
   - {fileID: 267691341}
   - {fileID: 603504234}
+  statSliders:
+  - {fileID: 404446274}
+  - {fileID: 1743650691}
+  - {fileID: 408730567}
+  - {fileID: 116376333}
 --- !u!1 &1120248107
 GameObject:
   m_ObjectHideFlags: 0
@@ -4142,7 +4149,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 100
+  m_MaxValue: 120
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
