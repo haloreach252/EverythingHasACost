@@ -1,0 +1,6 @@
+{
+	"eventTitle": "Found Money!",
+	"eventDescription": "You found 20 dollars on the ground!",
+	"eventTaskCode": 0,
+	"eventTaskModifier": 20.0
+}

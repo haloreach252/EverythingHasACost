@@ -1,0 +1,6 @@
+{
+	"eventTitle": "Bought new video game!",
+	"eventDescription": "You bought a new video game! You spend all night playing and lose some sleep",
+	"eventTaskCode": 1,
+	"eventTaskModifier": -4.0
+}

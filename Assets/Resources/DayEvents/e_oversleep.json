@@ -1,0 +1,6 @@
+{
+	"eventTitle": "Oversleep!",
+	"eventDescription": "You overslept! Lose 1 hour of work.",
+	"eventTaskCode": 0,
+	"eventTaskModifier": -1.0
+}

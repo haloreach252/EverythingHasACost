@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
 public class DayManager : MonoBehaviour {
 
@@ -19,18 +20,12 @@ public class DayManager : MonoBehaviour {
      * 3 - Health
      */
 
-    // Total hours per day, set to 24
-    private const int maxHoursPerDay = 24;
-
     // The event manager handles getting and choosing events for the day
-    public EventManager eventManager;
-    List<DayEvent> thisDayEvents;
-
-    // Costs
-    public Costs costs;
+    private EventManager eventManager;
+    private List<DayEvent> thisDayEvents;
 
     // Message Handling
-    MessageManager messageManager;
+    private MessageManager messageManager;
 
     // Hours management
     private int[] hours;
@@ -45,22 +40,29 @@ public class DayManager : MonoBehaviour {
     public Slider[] statSliders;
     private Text[] statSliderTexts;
 
+    // New Costs
+    public ScriptableCosts costs;
+    public ScriptableJob job;
+    public ScriptableSleep sleep;
+    public ScriptableSocial social;
+    public ScriptableEating eat;
+
     // Stats
+    public float maxMoney;
+    public float maxSleep;
+    public float maxMental;
+    public float maxHealth;
+
     private float money;
     private float mentalHealth;
     private float sleepState;
     private float healthState;
 
-    private SleepState sleepStateEnum;
-    private HealthStates healthStateEnum;
-    private MentalHealthStates mentalHealthStateEnum;
-
-    private float hourlyWage = 10.00f;
-
     private void Start() {
         eventManager = new EventManager(3);
 
         thisDayEvents = new List<DayEvent>();
+        thisDayEvents = eventManager.GetDayEvents();
 
         messageManager = GetComponent<MessageManager>();
 
@@ -69,10 +71,15 @@ public class DayManager : MonoBehaviour {
         totalHours = 0;
         daysPassed = 0;
 
-        money = 500f;
-        mentalHealth = 70f;
-        sleepState = 70f;
-        healthState = 70f;
+        statSliders[0].maxValue = maxMoney;
+        statSliders[1].maxValue = maxSleep;
+        statSliders[2].maxValue = maxMental;
+        statSliders[3].maxValue = maxHealth;
+
+        money = job.moneyCost * 25;
+        mentalHealth = 90f;
+        sleepState = 90f;
+        healthState = 90f;
 
         statSliderTexts = new Text[statSliders.Length];
         for (int i = 0; i < statSliders.Length; i++) {
@@ -88,14 +95,10 @@ public class DayManager : MonoBehaviour {
         statSliders[2].value = mentalHealth;
         statSliders[3].value = healthState;
 
-        sleepStateEnum = (SleepState)GetSleepEnum();
-        mentalHealthStateEnum = (MentalHealthStates)GetMentalHealthEnum();
-        healthStateEnum = (HealthStates)GetHealthEnum();
-
         statSliderTexts[0].text = "Money - $" + money;
-        statSliderTexts[1].text = "Sleep - " + sleepStateEnum.ToString();
-        statSliderTexts[2].text = "Mental Health - " + mentalHealthStateEnum.ToString();
-        statSliderTexts[3].text = "Health - " + healthStateEnum.ToString();
+        statSliderTexts[1].text = "Sleep - " + GetSleepString();
+        statSliderTexts[2].text = "Mental Health - " + GetMentalString();
+        statSliderTexts[3].text = "Health - " + GetHealthString();
     }
 
     // This occurs after a day ends at the beginning of the next day
@@ -103,7 +106,12 @@ public class DayManager : MonoBehaviour {
         daysPassed++;
         totalHours = 0;
         // Get this days events from the event manager
+        thisDayEvents.Clear();
         thisDayEvents = eventManager.GetDayEvents();
+
+        if(money <= 0) {
+            mentalHealth -= 10;
+        }
     }
 
     // Adds hours to specific tasks
@@ -125,11 +133,6 @@ public class DayManager : MonoBehaviour {
     }
 
     public void BeginDay() {
-        if(totalHours != maxHoursPerDay) {
-            messageManager.CreateMessage("Error!", "Make sure you have a full 24 hours in your schedule");
-            return;
-        }
-
         RunDayLogic();
     }
 
@@ -149,12 +152,35 @@ public class DayManager : MonoBehaviour {
         if (daysPassed != 0 && daysPassed % 7 == 0) {
             WeekendCalculations();
         }
+
         if(thisDayEvents.Count > 0) {
-            
+            foreach (DayEvent dayEvent in thisDayEvents) {
+                dayEvent.DisplayEvent(messageManager);
+                switch (dayEvent.eventTaskCode) {
+                    case 0:
+                        money += dayEvent.eventTaskModifier;
+                        break;
+                    case 1:
+                        mentalHealth += dayEvent.eventTaskModifier;
+                        healthState += dayEvent.eventTaskModifier;
+                        break;
+                    case 2:
+                        mentalHealth += dayEvent.eventTaskModifier;
+                        healthState += dayEvent.eventTaskModifier;
+                        break;
+                    case 3:
+                        mentalHealth += dayEvent.eventTaskModifier;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
-        // Show messages for events and such
+        money = Mathf.Clamp(money, -1000, maxMoney);
 
+        if (money >= maxMoney) 
+            messageManager.CreateMessage("Max Money!", "You've reached the money limit, consider spending less time working.");
 
         UpdateSliders();
 
@@ -167,54 +193,55 @@ public class DayManager : MonoBehaviour {
     }
 
     private void WeekendCalculations() {
-
+        money -= costs.carCost + costs.rentCost + costs.utilityCost;
     }
 
     private void WorkCalculations(int hours) {
-        float statMult = 0.0f;
-        if(hours != 0) {
+        if(hours > 0) {
             if((daysPassed % 6 == 0 || daysPassed % 7 == 0) && hours > 3) {
-                mentalHealth -= 5 * (hours - 3);
+                mentalHealth -= job.mentalCost * 2 * (hours - 3);
             }
-            if(hours <= 6) {
-                statMult = 1.0f;
-            } else if (hours <= 8) {
-                statMult = 1.0f;
-                mentalHealth -= 5 * (hours - 6);
+
+            if(hours > 6 && hours <= 8) {
+                mentalHealth -= job.mentalCost * (hours - 6);
+            } else if(hours > 8) {
+                mentalHealth -= job.mentalCost * (hours - 6);
+            }
+
+            if (hours <= 8) {
+                money += hours * job.moneyCost;
             } else {
-                statMult = 2.0f;
-                mentalHealth -= 5 * (hours - 6);
+                int overtime = hours - 8;
+                money += (overtime * 2 * job.moneyCost) + ((hours - overtime) * job.moneyCost);
             }
         }
-
-        money += hours * statMult * hourlyWage;
     }
 
     private void SleepCalculations(int hours) {
         if(hours <= 4) {
-            healthState -= 5;
-            mentalHealth -= 10;
+            healthState -= sleep.healthCost;
+            mentalHealth -= sleep.mentalCost;
         } else if(hours >= 7) {
-            healthState += 5;
-            mentalHealth += 5;
+            healthState += sleep.healthGain;
+            mentalHealth += sleep.mentalGain;
         }
     }
 
     private void EatCalculations(int hours) {
-        if(hours != 0) 
-            money -= hours * costs.mealCost;
+        if(hours > 0) 
+            money -= hours * eat.moneyCost;
 
         switch (hours) {
             case 0:
-                mentalHealth -= 10;
-                healthState -= 10;
+                mentalHealth -= eat.mentalCost * 2;
+                healthState -= eat.healthCost * 2;
                 break;
             case 1:
-                mentalHealth -= 5;
+                mentalHealth -= eat.mentalCost;
                 break;
             case 3:
-                healthState += 5;
-                mentalHealth += 5;
+                healthState += eat.mentalGain;
+                mentalHealth += eat.healthGain;
                 break;
             default:
                 break;
@@ -222,9 +249,11 @@ public class DayManager : MonoBehaviour {
     }
 
     private void SocialCalculations(int hours) {
-        if(hours != 0) {
-            money -= 5 * hours;
-            mentalHealth += 5 * hours;
+        if(hours > 0) {
+            money -= social.moneyCost * hours;
+            mentalHealth += social.mentalGain * hours;
+            healthState += social.healthGain;
+            healthState -= social.healthCost;
         }
     }
 
@@ -233,91 +262,55 @@ public class DayManager : MonoBehaviour {
     }
 
 	#region Ugly code
-    private int GetSleepEnum() {
+    private string GetSleepString() {
         if (sleepState <= 20) {
-            return 0;
+            return "Exhausted";
         } else if (sleepState <= 40) {
-            return 1;
+            return "Tired";
         } else if(sleepState <= 60) {
-            return 2;
+            return "Sleepy";
         } else if (sleepState <= 80) {
-            return 3;
+            return "Groggy";
         } else if (sleepState <= 100) {
-            return 4;
+            return "Rested";
         } else {
-            return 5;
+            return "Well Rested";
         }
     }
 
-    private int GetHealthEnum() {
+    private string GetHealthString() {
         if (healthState == 0) {
-            return 0;
+            return "Dead";
         } else if (healthState <= 20) {
-            return 1;
+            return "Bedridden";
         } else if (healthState <= 40) {
-            return 2;
+            return "Sick";
         } else if (healthState <= 50) {
-            return 3;
+            return "Unwell";
         } else if (healthState <= 90) {
-            return 4;
+            return "Healthy";
         } else {
-            return 5;
+            return "Radiant";
         }
     }
 
-    private int GetMentalHealthEnum() {
-        if (sleepState <= 10) {
-            return 0;
-        } else if (sleepState <= 30) {
-            return 1;
-        } else if (sleepState <= 40) {
-            return 2;
-        } else if (sleepState <= 60) {
-            return 3;
-        } else if (sleepState <= 70) {
-            return 4;
+    private string GetMentalString() {
+        if (mentalHealth <= 10) {
+            return "Suicidal";
+        } else if (mentalHealth <= 30) {
+            return "Depressed";
+        } else if (mentalHealth <= 40) {
+            return "Struggling";
+        } else if (mentalHealth <= 60) {
+            return "Decent";
+        } else if (mentalHealth <= 70) {
+            return "Normal";
         } else if(mentalHealth <= 90){
-            return 5;
+            return "Happy";
         } else {
-            return 6;
+            return "Ecstatic";
         }
     }
     #endregion
 
-}
-
-[System.Serializable]
-public class Costs {
-    public float rentCost = 120.0f;
-    public float mealCost = 10.0f;
-    public float utilityCost = 35.0f;
-    public float carCost = 65.0f;
-}
-
-public enum HealthStates {
-    Dead,
-    Bedridden,
-    Sick,
-    Unwell,
-    Healthy,
-    Radiant
-}
-
-public enum MentalHealthStates {
-    Suicidal,
-    Depressed,
-    Struggling,
-    Decent,
-    Normal,
-    Happy,
-    Ecstatic
-}
-
-public enum SleepState {
-    Exhaused,
-    Tired,
-    Sleepy,
-    Groggy,
-    Regular,
-    Rested
 }

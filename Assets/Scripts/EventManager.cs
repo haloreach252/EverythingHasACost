@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
-using System.IO;
 
 [System.Serializable]
 public class EventManager {
@@ -26,7 +25,15 @@ public class EventManager {
     }
 
     public List<DayEvent> GetDayEvents() {
-        return possibleEvents;
+        List<DayEvent> eventsToday = new List<DayEvent>();
+        int amountToday = Random.Range(0, maxEventsPerDay + 1);
+        for (int i = 0; i < amountToday; i++) {
+            DayEvent e = possibleEvents[Random.Range(0, possibleEvents.Count)];
+            if (!eventsToday.Contains(e)) {
+                eventsToday.Add(e);
+            }
+        }
+        return eventsToday;
     }
 
 }
@@ -37,4 +44,8 @@ public class DayEvent {
     public string eventDescription;
     public int eventTaskCode;
     public float eventTaskModifier;
+
+    public void DisplayEvent(MessageManager messageManager) {
+        messageManager.CreateMessage(eventTitle, eventDescription);
+    }
 }
