@@ -1,6 +1,6 @@
 {
-	"eventTitle": "Oversleep!",
-	"eventDescription": "You overslept! Lose 1 hour of work.",
+	"eventTitle": "Overslept!",
+	"eventDescription": "You overslept and got docked half a shift of pay!",
 	"eventTaskCode": 0,
-	"eventTaskModifier": -1.0
+	"eventTaskModifier": -40.0
 }

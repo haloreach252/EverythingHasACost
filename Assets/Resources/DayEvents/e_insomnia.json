@@ -1,0 +1,6 @@
+{
+	"eventTitle": "Insomnia",
+	"eventDescription": "You were unable to fall and stay asleep last night.",
+	"eventTaskCode": 1,
+	"eventTaskModifier": -10.0
+}
