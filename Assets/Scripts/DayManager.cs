@@ -220,17 +220,20 @@ public class DayManager : MonoBehaviour {
             Die(0);
         }
 
-        // 1/400 chance of suicide IF SUICIDAL
+        // 1/100000 chance of suicide IF SUICIDAL
         if(mentalHealth <= 10) {
-            float chance = Random.Range(0f, 4f);
+            float chance = Random.Range(0f, 100f);
             if(chance <= 0.01) {
                 Die(1);
             }
         }
 
         daysPassed++;
-        totalHours = 0;
 
+        if (!scheduleLocked) {
+            totalHours = 0;
+        }
+        
         // Is it a weekend?
         if((daysPassed + 1) % 6 == 0 || (daysPassed + 1) % 7 == 0) {
             isWeekend = true;
@@ -248,6 +251,10 @@ public class DayManager : MonoBehaviour {
         }
 
         UpdateText();
+    }
+
+    public void CloseIntro(GameObject o) {
+        o.SetActive(false);
     }
 
     // Adds hours to specific tasks

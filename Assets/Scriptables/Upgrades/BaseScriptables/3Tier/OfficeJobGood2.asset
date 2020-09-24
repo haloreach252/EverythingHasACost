@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f03ce68d200edcf4a93d91dcd960fb8e, type: 3}
-  m_Name: GoodBed
+  m_Script: {fileID: 11500000, guid: e69edd1033e92064c8725fe95dfbefda, type: 3}
+  m_Name: OfficeJobGood2
   m_EditorClassIdentifier: 
-  healthCost: 1
-  mentalCost: 1
-  healthGain: 8
-  mentalGain: 8
+  moneyCost: 34
+  healthCost: 4
+  mentalCost: 25
+  healthGain: 0
+  mentalGain: 0

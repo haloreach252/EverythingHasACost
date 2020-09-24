@@ -10,8 +10,6 @@ public class ScriptableUpgrade : ScriptableObject {
 	public int upgradeTier;
 	[FoldoutGroup("Upgrade Settings")]
 	public float cost;
-	[FoldoutGroup("Upgrade Settings"), InfoBox("Cost codes are as follows:\n0 - Money\n1 - Social\n2 - Health\n3 - Sleep")]
-	public int costTaskCode;
 	[FoldoutGroup("Upgrade Settings")]
 	public int upgradeCode;
 	[FoldoutGroup("Upgrade Settings")]

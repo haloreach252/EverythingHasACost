@@ -9,11 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1163d1ad23664d8489fbde4031e75c7c, type: 3}
-  m_Name: House
+  m_Script: {fileID: 11500000, guid: f03ce68d200edcf4a93d91dcd960fb8e, type: 3}
+  m_Name: GoodBed
   m_EditorClassIdentifier: 
-  rentCost: 280
-  carCost: 80
-  utilityCost: 100
-  healthBenefit: 15
-  mentalBenefit: 15
+  healthCost: 1
+  mentalCost: 1
+  healthGain: 12
+  mentalGain: 12

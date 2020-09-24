@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8b5a0c21588bf4eab7b27a27011858, type: 3}
   m_Name: LifeGood
   m_EditorClassIdentifier: 
-  upgradeTier: 0
-  cost: 0
-  costTaskCode: 0
+  upgradeTier: 2
+  cost: 550
   upgradeCode: 0
-  upgradeIndex: 2
+  upgradeIndex: 1
   na: 

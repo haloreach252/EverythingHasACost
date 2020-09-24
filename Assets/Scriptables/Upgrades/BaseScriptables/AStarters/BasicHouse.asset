@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5342ff7ab817e6d4e850f9a149ce8035, type: 3}
-  m_Name: GoodMeal
+  m_Script: {fileID: 11500000, guid: 1163d1ad23664d8489fbde4031e75c7c, type: 3}
+  m_Name: BasicHouse
   m_EditorClassIdentifier: 
-  moneyCost: 15
-  healthCost: 5
-  mentalCost: 5
-  healthGain: 7
-  mentalGain: 7
+  rentCost: 120
+  carCost: 35
+  utilityCost: 50
+  healthBenefit: 2
+  mentalBenefit: 2

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e69edd1033e92064c8725fe95dfbefda, type: 3}
-  m_Name: OfficeJobBasic2
+  m_Name: OfficeJobBasic
   m_EditorClassIdentifier: 
   moneyCost: 10
   healthCost: 0
-  mentalCost: 6
+  mentalCost: 5
   healthGain: 0
   mentalGain: 0

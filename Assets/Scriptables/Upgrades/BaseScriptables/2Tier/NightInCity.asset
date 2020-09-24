@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad1c77f5c6db7d41832794754f1d0e0, type: 3}
   m_Name: NightInCity
   m_EditorClassIdentifier: 
-  moneyCost: 35
+  moneyCost: 25
   healthCost: 0
-  healthGain: 2
-  mentalGain: 25
+  healthGain: 10
+  mentalGain: 30

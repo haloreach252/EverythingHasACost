@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5342ff7ab817e6d4e850f9a149ce8035, type: 3}
   m_Name: BasicMeal
   m_EditorClassIdentifier: 
-  moneyCost: 10
-  healthCost: 6
-  mentalCost: 6
+  moneyCost: 8
+  healthCost: 4
+  mentalCost: 4
   healthGain: 3
   mentalGain: 3

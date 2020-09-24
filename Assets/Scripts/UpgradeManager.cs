@@ -41,18 +41,22 @@ public class UpgradeManager : MonoBehaviour {
 		messageManager = GetComponent<MessageManager>();
 
 		upgradeOpen = false;
+
+		openTab = null;
 	}
 
 	#region Button Methods
 	// Toggles
 	public void ToggleUpgrades() {
+		mainGamePanel.SetActive(upgradeOpen);
 		upgradeOpen = !upgradeOpen;
 		upgradePanel.SetActive(upgradeOpen);
-		mainGamePanel.SetActive(upgradeOpen);
 	}
 
 	public void ToggleTab(GameObject tabToOpen) {
-		openTab.SetActive(false);
+		if (openTab != null) {
+			openTab.SetActive(false);
+		}
 		tabToOpen.SetActive(true);
 		openTab = tabToOpen;
 	}
@@ -65,21 +69,11 @@ public class UpgradeManager : MonoBehaviour {
 
 	#region Logic
 	private void ApplyUpgrade(ScriptableUpgrade upgrade) {
-		// TODO: Cost checking and tier checking
 		bool canUpgrade = false;
 
-		if(upgrade.costTaskCode == 0) {
-			canUpgrade = dayManager.Money >= upgrade.cost;
-			if (canUpgrade) dayManager.Money -= upgrade.cost;
-		} else if(upgrade.costTaskCode == 1) {
-			canUpgrade = dayManager.Mental >= upgrade.cost;
-			if (canUpgrade) dayManager.Mental -= upgrade.cost;
-		} else if(upgrade.costTaskCode == 2) {
-			canUpgrade = dayManager.Health >= upgrade.cost;
-			if (canUpgrade) dayManager.Health -= upgrade.cost;
-		} else {
-			canUpgrade = dayManager.Sleep >= upgrade.cost;
-			if (canUpgrade) dayManager.Sleep -= upgrade.cost;
+		if(upgrade.cost >= dayManager.Money) {
+			canUpgrade = true;
+			dayManager.Money -= upgrade.cost;
 		}
 
 		if (canUpgrade) {

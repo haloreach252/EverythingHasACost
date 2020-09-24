@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8b5a0c21588bf4eab7b27a27011858, type: 3}
   m_Name: JobOfficeGood2
   m_EditorClassIdentifier: 
-  upgradeTier: 0
-  cost: 0
-  costTaskCode: 0
+  upgradeTier: 3
+  cost: 1000
   upgradeCode: 1
   upgradeIndex: 4
   na: 

@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: FoodSimple
   m_EditorClassIdentifier: 
   upgradeTier: 1
-  cost: 0
-  costTaskCode: 0
+  cost: 50
   upgradeCode: 3
-  upgradeIndex: 1
+  upgradeIndex: 0
   na: 

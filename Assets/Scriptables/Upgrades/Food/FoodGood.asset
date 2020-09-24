@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: FoodGood
   m_EditorClassIdentifier: 
   upgradeTier: 2
-  cost: 0
-  costTaskCode: 0
+  cost: 300
   upgradeCode: 3
-  upgradeIndex: 2
+  upgradeIndex: 1
   na: 
