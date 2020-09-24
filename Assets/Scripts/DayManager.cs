@@ -484,9 +484,8 @@ public class DayManager : MonoBehaviour {
     // Reason, 0 is health, 1 is mental health
     private void Die(int reason) {
         newDayButton.SetActive(false);
-        string title;
-        string desc;
         messageManager.CreateCustomMessage("You died!", "Your health went to 0 and you died.", diePrefab);
+        PlayerPrefs.SetInt("HighScore", daysPassed);
     }
 
 	#region Ugly code
