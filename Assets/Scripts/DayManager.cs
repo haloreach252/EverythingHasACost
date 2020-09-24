@@ -42,10 +42,14 @@ public class DayManager : MonoBehaviour {
 
     private int totalHours;
 
+    private int totalHoursWeekday;
+    private int totalHoursWeekend;
+
     // Day management
     private int daysPassed;
     private int daysPassedSinceEvent;
     private bool isWeekend;
+    private bool weekendSchedule;
 
     // These track the schedule, but not the specified hours
     private bool scheduleLocked;
@@ -76,6 +80,8 @@ public class DayManager : MonoBehaviour {
     // Text references for reference and modification, the index should be the same as the task codes eg: The work text is at pos 0
     [FoldoutGroup("Hour Texts")]
     public Text[] hourDisplayTexts;
+    [FoldoutGroup("Hour Texts")]
+    public Text weekendDisplayText;
 
     // Days passed text
     [FoldoutGroup("Day Texts")]
@@ -140,7 +146,11 @@ public class DayManager : MonoBehaviour {
 
         messageManager = GetComponent<MessageManager>();
 
-        hours = new int[4] { 0,0,0,0 };
+        hoursWeekday = new int[4] { 0, 0, 0, 0 };
+        hoursWeekend = new int[4] { 0, 0, 0, 0 };
+
+        totalHoursWeekday = 0;
+        totalHoursWeekend = 0;
 
         totalHours = 0;
         daysPassed = 0;
@@ -150,6 +160,9 @@ public class DayManager : MonoBehaviour {
         mentalHealth = startMental;
         sleepState = startSleep;
         healthState = startHealth;
+
+        scheduleLockedWeekday = false;
+        scheduleLockedWeekend = false;
 
         scheduleLocked = false;
 
@@ -230,13 +243,19 @@ public class DayManager : MonoBehaviour {
 
         daysPassed++;
 
-        if (!scheduleLocked) {
-            totalHours = 0;
+        if (!scheduleLockedWeekday) {
+            totalHoursWeekday = 0;
         }
-        
+
+        if (!scheduleLockedWeekend) {
+            totalHoursWeekend = 0;
+        }
+
         // Is it a weekend?
         if((daysPassed + 1) % 6 == 0 || (daysPassed + 1) % 7 == 0) {
             isWeekend = true;
+        } else {
+            isWeekend = false;
         }
 
         daysPassedText.text = "Day " + daysPassed;
@@ -253,31 +272,68 @@ public class DayManager : MonoBehaviour {
         UpdateText();
     }
 
-    public void CloseIntro(GameObject o) {
+	#region Button Stuff
+	public void CloseIntro(GameObject o) {
         o.SetActive(false);
     }
 
     // Adds hours to specific tasks
     public void AddHour(int taskCode) {
-        if(totalHours < 24) {
-            totalHours++;
-            hours[taskCode]++;
-            hourDisplayTexts[taskCode].text = hours[taskCode].ToString();
+        if (weekendSchedule) {
+            if (totalHoursWeekend < 24) {
+                totalHoursWeekend++;
+                hoursWeekend[taskCode]++;
+                hourDisplayTexts[taskCode].text = hoursWeekend[taskCode].ToString();
+            }
+        } else {
+            if(totalHoursWeekday < 24) {
+                totalHoursWeekday++;
+                hoursWeekday[taskCode]++;
+                hourDisplayTexts[taskCode].text = hoursWeekday[taskCode].ToString();
+            }
         }
     }
 
     // Removes hours from specific tasks
     public void RemoveHour(int taskCode) {
-        if (totalHours > 0 && hours[taskCode] > 0) {
-            totalHours--;
-            hours[taskCode]--;
-            hourDisplayTexts[taskCode].text = hours[taskCode].ToString();
+        if (weekendSchedule) {
+            if (totalHoursWeekend > 0 && hoursWeekend[taskCode] > 0) {
+                totalHoursWeekend--;
+                hoursWeekend[taskCode]--;
+                hourDisplayTexts[taskCode].text = hoursWeekend[taskCode].ToString();
+            }
+        } else {
+            if (totalHoursWeekday > 0 && hoursWeekday[taskCode] > 0) {
+                totalHoursWeekday--;
+                hoursWeekday[taskCode]--;
+                hourDisplayTexts[taskCode].text = hoursWeekday[taskCode].ToString();
+            }
+        }
+    }
+
+    public void WeekendSchedule(bool isWeekendS) {
+        weekendSchedule = isWeekendS;
+
+        if (weekendSchedule) {
+            for (int i = 0; i < hoursWeekend.Length; i++) {
+                hourDisplayTexts[i].text = hoursWeekend[i].ToString();
+            }
+            weekendDisplayText.gameObject.SetActive(true);
+        } else {
+            for (int i = 0; i < hoursWeekday.Length; i++) {
+                hourDisplayTexts[i].text = hoursWeekday[i].ToString();
+            }
+            weekendDisplayText.gameObject.SetActive(false);
         }
     }
 
     // Sets whether the schedule is locked or not
     public void SetSchedule() {
-        scheduleLocked = !scheduleLocked;
+        if (weekendSchedule) {
+            scheduleLockedWeekend = !scheduleLockedWeekend;
+        } else {
+            scheduleLockedWeekday = !scheduleLockedWeekday;
+        }
     }
 
     // Starts the day
@@ -285,9 +341,9 @@ public class DayManager : MonoBehaviour {
         messageManager.ClearMessages();
         RunDayLogic();
     }
-
-    // Checks if an event can happen today
-    private bool CanEventHappenToday() {
+	#endregion
+	// Checks if an event can happen today
+	private bool CanEventHappenToday() {
         float chance = Random.Range(0f, 1f);
         chance += daysPassedSinceEvent * 0.05f;
         if(chance <= 0.90) {
@@ -324,15 +380,31 @@ public class DayManager : MonoBehaviour {
             }
         }
 
-        WorkCalculations(hours[0]);
-        SleepCalculations(hours[1]);
-        EatCalculations(hours[2]);
-        SocialCalculations(hours[3]);
+        if (isWeekend) {
+            WorkCalculations(hoursWeekend[0]);
+            SleepCalculations(hoursWeekend[1]);
+            EatCalculations(hoursWeekend[2]);
+            SocialCalculations(hoursWeekend[3]);
+        } else {
+            WorkCalculations(hoursWeekday[0]);
+            SleepCalculations(hoursWeekday[1]);
+            EatCalculations(hoursWeekday[2]);
+            SocialCalculations(hoursWeekday[3]);
+        }
 
-        if (!scheduleLocked) {
-            for (int i = 0; i < hours.Length; i++) {
-                hours[i] = 0;
-                hourDisplayTexts[i].text = "0";
+        if (isWeekend) {
+            if (!scheduleLockedWeekend) {
+                for (int i = 0; i < hoursWeekend.Length; i++) {
+                    hoursWeekend[i] = 0;
+                    hourDisplayTexts[i].text = "0";
+                }
+            }
+        } else {
+            if (!scheduleLockedWeekday) {
+                for (int i = 0; i < hoursWeekday.Length; i++) {
+                    hoursWeekday[i] = 0;
+                    hourDisplayTexts[i].text = "0";
+                }
             }
         }
 
@@ -350,7 +422,7 @@ public class DayManager : MonoBehaviour {
 
     private void WorkCalculations(int hours) {
         if(hours > 0) {
-            if((daysPassed % 6 == 0 || daysPassed % 7 == 0) && hours > 3) {
+            if(isWeekend && hours > 3) {
                 mentalHealth -= job.mentalCost * 2 * (hours - 3);
             }
 
