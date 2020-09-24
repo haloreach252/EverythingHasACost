@@ -98,6 +98,14 @@ public class DayManager : MonoBehaviour {
     public ScriptableSocial social;
     [FoldoutGroup("Scriptables")]
     public ScriptableEating eat;
+    [FoldoutGroup("Scriptables")]
+    public ScriptableCosts bgChange;
+    [FoldoutGroup("Scriptables")]
+    public Image bgImage;
+    [FoldoutGroup("Scriptables")]
+    public Image bedImage;
+    [FoldoutGroup("Scriptables")]
+    public Sprite bgSprite;
 
     // Stats
 
@@ -120,6 +128,10 @@ public class DayManager : MonoBehaviour {
     public float startMental;
     [FoldoutGroup("Starting values")]
     public float startHealth;
+
+    public GameObject infoPanel;
+    public Image lockButton;
+    public List<DeathMessage> deathMessages;
 
     // These track the stats
     private float money;
@@ -175,13 +187,24 @@ public class DayManager : MonoBehaviour {
 
         UpdateText();
     }
-	#endregion
 
-	#region Upgrades
-	public void UpgradeHouse(ScriptableCosts newCosts) {
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.I)) {
+            infoPanel.SetActive(!infoPanel.activeSelf);
+        }
+    }
+    #endregion
+
+    #region Upgrades
+    public void UpgradeHouse(ScriptableCosts newCosts) {
         costs = newCosts;
         weeklyPayment = costs.carCost + costs.rentCost + costs.utilityCost;
         weeklyCostText.text = "Weekly - $" + weeklyPayment;
+
+        if(costs = bgChange) {
+            bgImage.sprite = bgSprite;
+            bedImage.gameObject.SetActive(true);
+        }
     }
 
     public void UpgradeJob(ScriptableJob newJob) {
@@ -230,14 +253,14 @@ public class DayManager : MonoBehaviour {
 
         // Die if your health is 0
         if (healthState <= 0) {
-            Die(0);
+            Die();
         }
 
         // 1/100000 chance of suicide IF SUICIDAL
         if(mentalHealth <= 10) {
             float chance = Random.Range(0f, 100f);
             if(chance <= 0.01) {
-                Die(1);
+                Die();
             }
         }
 
@@ -267,6 +290,10 @@ public class DayManager : MonoBehaviour {
 
         if(money <= 0) {
             mentalHealth -= 10;
+        }
+
+        if(money <= -900) {
+            messageManager.CreateMessage("Money!", "You may want to start finding ways to build up some money, you're getting dangerously low");
         }
 
         UpdateText();
@@ -325,6 +352,24 @@ public class DayManager : MonoBehaviour {
             }
             weekendDisplayText.gameObject.SetActive(false);
         }
+
+        SetButtonColor(weekendSchedule);
+    }
+
+    private void SetButtonColor(bool weekendSchedule) {
+        if (weekendSchedule) {
+            if (scheduleLockedWeekend) {
+                lockButton.color = Color.red;
+            } else {
+                lockButton.color = Color.white;
+            }
+        } else {
+            if (scheduleLockedWeekday) {
+                lockButton.color = Color.red;
+            } else {
+                lockButton.color = Color.white;
+            }
+        }
     }
 
     // Sets whether the schedule is locked or not
@@ -334,6 +379,8 @@ public class DayManager : MonoBehaviour {
         } else {
             scheduleLockedWeekday = !scheduleLockedWeekday;
         }
+
+        SetButtonColor(weekendSchedule);
     }
 
     // Starts the day
@@ -481,10 +528,10 @@ public class DayManager : MonoBehaviour {
         }
     }
 
-    // Reason, 0 is health, 1 is mental health
-    private void Die(int reason) {
+    private void Die() {
+        DeathMessage message = deathMessages[Random.Range(0,deathMessages.Count)];
         newDayButton.SetActive(false);
-        messageManager.CreateCustomMessage("You died!", "Your health went to 0 and you died.", diePrefab);
+        messageManager.CreateCustomMessage(message.title, message.description, diePrefab);
         PlayerPrefs.SetInt("HighScore", daysPassed);
     }
 
@@ -540,4 +587,10 @@ public class DayManager : MonoBehaviour {
     }
     #endregion
 
+}
+
+[System.Serializable]
+public class DeathMessage {
+    public string title;
+    public string description;
 }
