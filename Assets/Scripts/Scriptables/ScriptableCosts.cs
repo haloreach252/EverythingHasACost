@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-[CreateAssetMenu()]
+[CreateAssetMenu(), System.Serializable]
 public class ScriptableCosts : ScriptableObject {
 
 	[BoxGroup("Weekly Costs")]

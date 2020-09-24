@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
-[CreateAssetMenu()]
+[CreateAssetMenu(), System.Serializable]
 public class ScriptableEating : ScriptableObject {
 	public float moneyCost;
 	public float healthCost;

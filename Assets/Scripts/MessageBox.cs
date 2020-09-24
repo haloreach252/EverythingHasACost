@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MessageBox : MonoBehaviour {
 
@@ -13,7 +14,7 @@ public class MessageBox : MonoBehaviour {
 	}
 
 	public void RestartGame() {
-		// TODO: restart the game :)
+		SceneManager.LoadScene(1);
 	}
 
 }

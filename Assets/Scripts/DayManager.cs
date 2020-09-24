@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using Sirenix.OdinInspector;
 
 public class DayManager : MonoBehaviour {
