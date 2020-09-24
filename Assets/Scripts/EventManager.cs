@@ -26,7 +26,7 @@ public class EventManager {
 
     public List<DayEvent> GetDayEvents() {
         List<DayEvent> eventsToday = new List<DayEvent>();
-        int amountToday = Random.Range(0, maxEventsPerDay + 1);
+        int amountToday = Random.Range(1, maxEventsPerDay + 1);
         for (int i = 0; i < amountToday; i++) {
             DayEvent e = possibleEvents[Random.Range(0, possibleEvents.Count)];
             if (!eventsToday.Contains(e)) {

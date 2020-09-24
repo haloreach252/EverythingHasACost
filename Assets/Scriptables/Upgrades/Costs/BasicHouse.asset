@@ -10,17 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1163d1ad23664d8489fbde4031e75c7c, type: 3}
-  m_Name: BaseCosts
+  m_Name: BasicHouse
   m_EditorClassIdentifier: 
-  rentCost: 120
-  carCost: 65
-  utilityCost: 35
-  baseSalary: 10
-  baseMealCost: 10
-  baseWorkMentalCost: 5
-  baseSocialCost: 5
-  sleepMentalCost: 10
-  sleepHealthCost: 5
-  baseSocialMentalCost: 5
-  baseEatingHealthCost: 5
-  baseEatingMentalCost: 5
+  rentCost: 160
+  carCost: 40
+  utilityCost: 55
+  healthBenefit: 0
+  mentalBenefit: 0

@@ -12,4 +12,8 @@ public class MessageBox : MonoBehaviour {
 		Destroy(gameObject);
 	}
 
+	public void RestartGame() {
+		// TODO: restart the game :)
+	}
+
 }

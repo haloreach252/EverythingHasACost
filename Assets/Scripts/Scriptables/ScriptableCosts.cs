@@ -12,4 +12,9 @@ public class ScriptableCosts : ScriptableObject {
 	public float carCost;
 	[BoxGroup("Weekly Costs")]
 	public float utilityCost;
+
+	[BoxGroup("Benefits")]
+	public float healthBenefit;
+	[BoxGroup("Benefits")]
+	public float mentalBenefit;
 }
