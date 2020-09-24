@@ -1,0 +1,6 @@
+{
+	"eventTitle": "Exams.",
+	"eventDescription": "You spent all night cramming for exams.",
+	"eventTaskCode": 1,
+	"eventTaskModifier": -10.0
+}
